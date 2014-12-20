@@ -113,7 +113,7 @@ describe(@"AdvancedObject", ^{
         expect(json[@"deeply"][@"nested"][@"fields"][@"test"]).to.equal(@650432);
         expect(json[@"different_key"]).to.equal(@54321);
         expect(json[@"skipped_on_read"]).to.equal(@"read");
-        expect(json[@"transformed"]).to.equal(@90809);
+        expect(json[@"transformed"]).to.equal(@"90809");
         expect(json[@"skipped_on_write"]).to.beNil();
         expect(json[@"read_null"]).to.beNil();
         expect(json[@"written_null"]).to.beKindOf([NSNull class]);
@@ -126,7 +126,6 @@ describe(@"AdvancedObject", ^{
         expect(json[@"children"][2][@"string"]).to.equal(@"third");
         expect(json[@"children"][2][@"number"]).to.equal(@3);
     });
-    
 });
 
 SpecEnd

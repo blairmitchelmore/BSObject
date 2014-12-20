@@ -13,8 +13,11 @@
 + (Class)entryClassForChildren {
     return [BasicObject class];
 }
-+ (NSNumber *)transformedValueForTransformed:(NSString *)original {
++ (NSNumber *)transformedValueFromJsonForTransformed:(NSString *)original {
     return @([original integerValue]);
+}
++ (NSString *)transformedValueToJsonForTransformed:(NSNumber *)original {
+    return [original stringValue];
 }
 + (NSNumber *)defaultValueForPreset {
     return @40392;

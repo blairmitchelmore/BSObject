@@ -275,10 +275,27 @@ NSDateFormatter *DateFormatterForPropertyInClass(Class klass, NSString *property
     return formatter;
 }
 
-id TransformedValueForPropertyInClass(Class klass, NSString *property, id original, BOOL *called) {
+id TransformedValueFromJsonForPropertyInClass(Class klass, NSString *property, id original, BOOL *called) {
     id transformed = nil;
     NSString *key = [property underscorify];
-    NSString *method = [[[@"transformed_value_for_" stringByAppendingString:key] camelize] stringByAppendingString:@":"];
+    NSString *method = [[[@"transformed_value_from_json_for_" stringByAppendingString:key] camelize] stringByAppendingString:@":"];
+    SEL selector = NSSelectorFromString(method);
+    if ([klass respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        transformed = [klass performSelector:selector withObject:original];
+        *called = YES;
+#pragma clang diagnostic pop
+    } else {
+        *called = NO;
+    }
+    return transformed;
+}
+
+id TransformedValueToJsonForPropertyInClass(Class klass, NSString *property, id original, BOOL *called) {
+    id transformed = nil;
+    NSString *key = [property underscorify];
+    NSString *method = [[[@"transformed_value_to_json_for_" stringByAppendingString:key] camelize] stringByAppendingString:@":"];
     SEL selector = NSSelectorFromString(method);
     if ([klass respondsToSelector:selector]) {
 #pragma clang diagnostic push
@@ -417,7 +434,7 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
         id value = [json objectForKeyPath:key];
         
         BOOL called = NO;
-        id transformed = TransformedValueForPropertyInClass(klass, property, value, &called);
+        id transformed = TransformedValueFromJsonForPropertyInClass(klass, property, value, &called);
         if (transformed && called) value = transformed;
         if (value == nil && !nulls) continue;
         
@@ -486,6 +503,10 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
             }
         }];
     }
+    
+    BOOL called = NO;
+    id transformed = TransformedValueToJsonForPropertyInClass(klass, property, value, &called);
+    if (transformed && called) value = transformed;
     
     BOOL nulls = ShouldSerializeNullsForPropertyInClass(klass, property);
     if (!nulls && (value == nil || value == [NSNull null])) return;
