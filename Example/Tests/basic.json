@@ -1,0 +1,8 @@
+{
+    "string": "stringValue",
+    "longer_key": "longerKeyValue",
+    "ignored": "doesn't matter",
+    "number": 1234,
+    "epoch_date": 1418959215,
+    "standard_date": "2014-12-19T03:20.15.123Z"
+}

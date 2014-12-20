@@ -1,0 +1,36 @@
+{
+    "skipped_on_read": "read",
+    "skipped_on_write": "write",
+    "different_key": 54321,
+    "nested": {
+        "value": 90210
+    },
+    "pair": {
+        "first": 30943,
+        "second": 20132
+    },
+    "deeply": {
+        "nested": {
+            "fields": {
+                "test": 650432
+            }
+        }
+    },
+    "read_null": null,
+    "written_null": null,
+    "transformed": "90809",
+    "children": [
+        {
+            "string": "first",
+            "number": 1
+        },
+        {
+            "string": "second",
+            "number": 2
+        },
+        {
+            "string": "third",
+            "number": 3
+        }
+    ]
+}
