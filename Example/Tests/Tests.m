@@ -22,7 +22,10 @@ describe(@"BasicObject", ^{
         expect(test.longerKey).to.equal(@"longerKeyValue");
         expect(test.number).to.equal(@1234);
         expect(test.ignored).to.beNil();
-        
+        expect(test.standardUrl.absoluteString).to.equal(@"https://twitter.com/bmitchelmore");
+        expect(test.standardUrl.isFileURL).to.equal(NO);
+        expect(test.fileUrl.path).to.equal(@"/usr/bin/example.dat");
+        expect(test.fileUrl.isFileURL).to.equal(YES);
         
         NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
         calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
@@ -49,6 +52,8 @@ describe(@"BasicObject", ^{
         expect(json[@"number"]).to.equal(@1234);
         expect(json[@"ignored"]).to.beNil();
         expect(json[@"epoch_date"]).to.equal(@1418959215);
+        expect(json[@"standard_url"]).to.equal(@"https://twitter.com/bmitchelmore");
+        expect(json[@"file_url"]).to.equal(@"file:///usr/bin/example.dat");
     });
 });
 

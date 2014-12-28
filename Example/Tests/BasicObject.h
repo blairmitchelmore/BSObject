@@ -14,5 +14,7 @@
 @property (nonatomic, strong) NSString *longerKey;
 @property (nonatomic, strong) NSDate *epochDate;
 @property (nonatomic, strong) NSDate *standardDate;
+@property (nonatomic, strong) NSURL *standardUrl;
+@property (nonatomic, strong) NSURL *fileUrl;
 @property (nonatomic, strong, readonly) NSNumber *ignored;
 @end

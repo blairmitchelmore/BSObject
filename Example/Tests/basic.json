@@ -3,5 +3,7 @@
     "longer_key": "longerKeyValue",
     "ignored": "doesn't matter",
     "number": 1234,
-    "epoch_date": 1418959215
+    "epoch_date": 1418959215,
+    "standard_url": "https://twitter.com/bmitchelmore",
+    "file_url": "file:///usr/bin/example.dat"
 }

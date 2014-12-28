@@ -510,6 +510,14 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
             }
         } else if ([type isEqualToString:NSStringFromClass([NSDate class])] && [value isKindOfClass:[NSNumber class]]) {
             value = [NSDate dateWithTimeIntervalSince1970:[value doubleValue]];
+        } else if ([type isEqualToString:NSStringFromClass([NSURL class])] && [value isKindOfClass:[NSString class]]) {
+            NSURLComponents *components = [NSURLComponents componentsWithString:value];
+            NSString *string = (NSString *)value;
+            if ([components.scheme isEqualToString:@"file"]) {
+                value = [NSURL fileURLWithPath:[string substringFromIndex:7]];
+            } else {
+                value = [NSURL URLWithString:value];
+            }
         } else if ([type isEqualToString:NSStringFromClass([NSArray class])] && [value isKindOfClass:[NSArray class]]) {
             __block Class entryClass = EntryClassForPropertyInClass(klass, property);
             if (entryClass) {
@@ -550,6 +558,13 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
             value = [formatter stringFromDate:value];
         } else {
             value = @([value timeIntervalSince1970]);
+        }
+    } else if ([value isKindOfClass:[NSURL class]]) {
+        NSURL *url = (NSURL *)value;
+        if (url.isFileURL) {
+            value = [@"file://" stringByAppendingString:[url path]];
+        } else {
+            value = [url absoluteString];
         }
     } else if ([value isKindOfClass:[BSObject class]]) {
         value = [value json];
