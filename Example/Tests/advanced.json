@@ -19,6 +19,7 @@
     "read_null": null,
     "written_null": null,
     "transformed": "90809",
+    "custom_date": "2014-12-19T03:20.15.123Z",
     "children": [
         {
             "string": "first",

@@ -253,7 +253,57 @@ Class EntryClassForPropertyInClass(Class klass, NSString *property) {
     return value;
 }
 
-NSDateFormatter *DateFormatterForPropertyInClass(Class klass, NSString *property) {
+NSString *DefaultTimeZoneAbbreviationForClass(Class klass) {
+    NSString *method = [@"default_time_zone_abbreviation" camelize];
+    SEL selector = NSSelectorFromString(method);
+    NSString *abbreviation = nil;
+    if ([klass respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        abbreviation = [klass performSelector:selector];
+#pragma clang diagnostic pop
+    }
+    return abbreviation;
+}
+
+NSString *TimeZoneAbbreviationForPropertyInClass(Class klass, NSString *property) {
+    NSString *key = [property underscorify];
+    NSString *method = [[@"time_zone_abbreviation_for_" stringByAppendingString:key] camelize];
+    SEL selector = NSSelectorFromString(method);
+    NSString *abbreviation = nil;
+    if ([klass respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        abbreviation = [klass performSelector:selector];
+#pragma clang diagnostic pop
+    }
+    if (!abbreviation) return DefaultTimeZoneAbbreviationForClass(klass);
+    return abbreviation;
+}
+
+NSTimeZone *TimeZoneForPropertyInClass(Class klass, NSString *property) {
+    NSString *abbreviation = TimeZoneAbbreviationForPropertyInClass(klass, property);
+    if (abbreviation) {
+        return [NSTimeZone timeZoneWithAbbreviation:abbreviation];
+    } else {
+        return [NSTimeZone timeZoneForSecondsFromGMT:0];
+    }
+}
+
+NSString *DefaultDateFormatForClass(Class klass) {
+    NSString *method = [@"default_date_format" camelize];
+    SEL selector = NSSelectorFromString(method);
+    NSString *format = nil;
+    if ([klass respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        format = [klass performSelector:selector];
+#pragma clang diagnostic pop
+    }
+    return format;
+}
+
+NSString *DateFormatForPropertyInClass(Class klass, NSString *property) {
     NSString *key = [property underscorify];
     NSString *method = [[@"date_format_for_" stringByAppendingString:key] camelize];
     SEL selector = NSSelectorFromString(method);
@@ -264,15 +314,20 @@ NSDateFormatter *DateFormatterForPropertyInClass(Class klass, NSString *property
         format = [klass performSelector:selector];
 #pragma clang diagnostic pop
     }
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    if (!format) return DefaultDateFormatForClass(klass);
+    return format;
+}
+
+NSDateFormatter *DateFormatterForPropertyInClass(Class klass, NSString *property) {
+    NSString *format = DateFormatForPropertyInClass(klass, property);
     if (format) {
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         formatter.dateFormat = format;
+        formatter.timeZone = TimeZoneForPropertyInClass(klass, property);
+        return formatter;
     } else {
-        formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        return nil;
     }
-    
-    return formatter;
 }
 
 id TransformedValueFromJsonForPropertyInClass(Class klass, NSString *property, id original, BOOL *called) {
@@ -448,7 +503,11 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
             value = nil;
         } else if ([type isEqualToString:NSStringFromClass([NSDate class])] && [value isKindOfClass:[NSString class]]) {
             NSDateFormatter *formatter = DateFormatterForPropertyInClass(klass, property);
-            value = [formatter dateFromString:value];
+            if (formatter) {
+                value = [formatter dateFromString:value];
+            } else {
+                value = nil;
+            }
         } else if ([type isEqualToString:NSStringFromClass([NSDate class])] && [value isKindOfClass:[NSNumber class]]) {
             value = [NSDate dateWithTimeIntervalSince1970:[value doubleValue]];
         } else if ([type isEqualToString:NSStringFromClass([NSArray class])] && [value isKindOfClass:[NSArray class]]) {

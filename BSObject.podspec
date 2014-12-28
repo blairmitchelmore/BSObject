@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "BSObject"
-  s.version          = "0.1.0"
+  s.version          = "0.1.1"
   s.summary          = "An object designed to map subclasses to json data automatically"
   s.description      = <<-DESC
                        BSObject lets you create objects that will automatically

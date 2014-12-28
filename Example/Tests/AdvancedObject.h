@@ -9,6 +9,7 @@
 #import "BSObject.h"
 
 @interface AdvancedObject : BSObject
+@property (nonatomic, strong) NSDate *customDate;
 @property (nonatomic, strong) NSString *customKey;
 @property (nonatomic, strong) NSString *nestedKey;
 @property (nonatomic, strong) NSString *skippedOnRead;

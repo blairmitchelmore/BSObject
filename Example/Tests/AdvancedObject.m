@@ -13,6 +13,9 @@
 + (Class)entryClassForChildren {
     return [BasicObject class];
 }
++ (NSString *)defaultDateFormat {
+    return @"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+}
 + (NSNumber *)transformedValueFromJsonForTransformed:(NSString *)original {
     return @([original integerValue]);
 }

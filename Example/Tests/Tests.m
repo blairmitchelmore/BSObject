@@ -27,17 +27,6 @@ describe(@"BasicObject", ^{
         NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
         calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
         
-        NSDateComponents *standardDateComponents = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitNanosecond fromDate:test.standardDate];
-        
-        NSLog(@"standardDateComponents: %@", standardDateComponents);
-        expect(standardDateComponents.year).to.equal(2014);
-        expect(standardDateComponents.month).to.equal(12);
-        expect(standardDateComponents.day).to.equal(19);
-        expect(standardDateComponents.hour).to.equal(3);
-        expect(standardDateComponents.minute).to.equal(20);
-        expect(standardDateComponents.second).to.equal(15);
-        expect(standardDateComponents.nanosecond).to.beCloseToWithin(123000000, 1000);
-        
         NSDateComponents *epochDateComponents = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitNanosecond fromDate:test.epochDate];
         
         NSLog(@"epochDateComponents: %@", epochDateComponents);
@@ -59,8 +48,7 @@ describe(@"BasicObject", ^{
         expect(json[@"longer_key"]).to.equal(@"longerKeyValue");
         expect(json[@"number"]).to.equal(@1234);
         expect(json[@"ignored"]).to.beNil();
-        expect(json[@"epoch_date"]).to.equal(@"2014-12-19T03:20:15.000Z");
-        expect(json[@"standard_date"]).to.equal(@"2014-12-19T03:20:15.123Z");
+        expect(json[@"epoch_date"]).to.equal(@1418959215);
     });
 });
 
@@ -96,6 +84,20 @@ describe(@"AdvancedObject", ^{
         expect(third).to.beKindOf([BasicObject class]);
         expect(third.string).to.equal(@"third");
         expect(third.number).to.equal(@3);
+        
+        NSCalendar *calendar = [NSCalendar calendarWithIdentifier:NSGregorianCalendar];
+        calendar.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+        
+        NSDateComponents *standardDateComponents = [calendar components:NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay | NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitNanosecond fromDate:test.customDate];
+        
+        NSLog(@"standardDateComponents: %@", standardDateComponents);
+        expect(standardDateComponents.year).to.equal(2014);
+        expect(standardDateComponents.month).to.equal(12);
+        expect(standardDateComponents.day).to.equal(19);
+        expect(standardDateComponents.hour).to.equal(3);
+        expect(standardDateComponents.minute).to.equal(20);
+        expect(standardDateComponents.second).to.equal(15);
+        expect(standardDateComponents.nanosecond).to.beCloseToWithin(123000000, 1000);
         
         
     });
