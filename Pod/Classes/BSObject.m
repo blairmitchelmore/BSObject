@@ -63,7 +63,10 @@ static NSString *getPropertyType(objc_property_t property) {
 
 @implementation NSString (BSObject_Helpers)
 - (NSString *)underscorify {
-    
+    static NSCache *cache = nil;
+    if (!cache) cache = [NSCache new];
+    if ([cache objectForKey:self]) return [cache objectForKey:self];
+	
     NSScanner *scanner = [NSScanner scannerWithString:self];
     scanner.caseSensitive = YES;
     
@@ -84,10 +87,15 @@ static NSString *getPropertyType(objc_property_t property) {
         if (lastScanLocation == scanner.scanLocation) return nil;
         lastScanLocation = scanner.scanLocation;
     }
-    
-    return [NSString stringWithString:builder];
+
+    NSString *result = [NSString stringWithString:builder];
+    [cache setObject:result forKey:self];
+    return result;
 }
 - (NSString *)camelize {
+    static NSCache *cache = nil;
+    if (!cache) cache = [NSCache new];
+    if ([cache objectForKey:self]) return [cache objectForKey:self];
     
     NSScanner *scanner = [NSScanner scannerWithString:self];
     
@@ -111,8 +119,10 @@ static NSString *getPropertyType(objc_property_t property) {
         if (lastScanLocation == scanner.scanLocation) return nil;
         lastScanLocation = scanner.scanLocation;
     }
-    
-    return [NSString stringWithString:builder];
+
+    NSString *result = [NSString stringWithString:builder];
+    [cache setObject:result forKey:self];
+    return result;
 }
 @end
 
