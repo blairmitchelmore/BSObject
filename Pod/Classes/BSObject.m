@@ -509,9 +509,7 @@ BOOL ShouldDeserializeNullsForPropertyInClass(Class klass, NSString *property) {
         }
         
         NSString *type = properties[property];
-        if ([type isEqualToString:NSStringFromClass([NSNumber class])] && [value doubleValue] == 0) {
-            value = nil;
-        } else if ([type isEqualToString:NSStringFromClass([NSDate class])] && [value isKindOfClass:[NSString class]]) {
+        if ([type isEqualToString:NSStringFromClass([NSDate class])] && [value isKindOfClass:[NSString class]]) {
             NSDateFormatter *formatter = DateFormatterForPropertyInClass(klass, property);
             if (formatter) {
                 value = [formatter dateFromString:value];
